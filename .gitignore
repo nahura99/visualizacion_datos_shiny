@@ -1,17 +1,4 @@
-# R
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-*.Rproj
-
-# rsconnect (credenciales/deploy)
-rsconnect/
-
-# Datos crudos descargados (grandes; se regeneran con el script)
-datos-crudos/*.csv
-datos-crudos/*.xlsx
-
-# Sistema
-.DS_Store
-Thumbs.db

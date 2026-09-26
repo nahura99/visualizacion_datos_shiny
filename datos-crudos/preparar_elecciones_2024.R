@@ -4,6 +4,18 @@
 # Descarga y agrega los datos oficiales de la ELECCIÓN NACIONAL 2024
 # publicados por la CORTE ELECTORAL en el Catálogo de Datos Abiertos del Estado.
 #
+# NOTA: este script es un ejemplo simple, pensado para leer y correr de punta
+# a punta (solo participación, blancos y anulados por departamento). El
+# dataset que usa la app principal del curso, `datos/elecciones_departamento_2024.csv`,
+# es más completo: además de participación, trae el lema ganador, el margen y
+# los votos de cada partido por departamento, y su par georreferenciado
+# (`datos/elecciones_locales_2024.csv` / `elecciones_circuitos_2024.csv`) se
+# usa en el mapa de la Clase 8. Se construyó siguiendo exactamente el
+# procedimiento que describe la NOTA (avanzado) al final de este archivo, más
+# una etapa de geocodificación de cada local de votación. Este script queda
+# como el punto de partida más simple para quien quiera reproducir ese
+# camino, o adaptarlo a otra elección.
+#
 # Fuente (original, oficial):
 #   Corte Electoral - Elecciones Nacionales 2024
 #   https://catalogodatos.gub.uy/dataset/corte-electoral-elecciones-nacionales-2024
@@ -85,6 +97,9 @@ print(participacion)
 #   - "Desglose de votos"  (votos por hoja de votación en cada circuito)
 #   - "Integración de hojas de votación"  (mapea cada hoja -> partido/lema)
 # El procedimiento es: leer desglose, unir con la tabla de hojas por el número
-# de hoja, y agregar por (departamento, partido). Se deja como ejercicio /
+# de hoja, y agregar por (departamento, partido). Para el mapa de la Clase 8,
+# además, cada local de votación se cruza con el plan circuital (para saber en
+# qué edificio funciona cada circuito) y se geocodifica con el servicio
+# oficial de IDE Uruguay (direcciones.ide.uy). Se deja como ejercicio /
 # material de las clases avanzadas y de los trabajos finales.
 # -----------------------------------------------------------------------------

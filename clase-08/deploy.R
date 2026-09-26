@@ -5,14 +5,15 @@
 #   1) Crear una cuenta gratuita en https://www.shinyapps.io/
 #   2) En la web: Account -> Tokens -> "Show" -> copiar el bloque
 #      rsconnect::setAccountInfo(...) y pegarlo/ejecutarlo UNA vez en R.
-#   3) install.packages("rsconnect")
+#   3) install.packages(c("rsconnect", "leaflet"))
 #
 # IMPORTANTE: los datos deben viajar con la app. Este proyecto incluye una
-# copia del CSV en clase-08/datos/ para que el deploy funcione. rsconnect
-# sube automáticamente todos los archivos de la carpeta de la app.
+# copia de los tres CSV (departamento, locales, circuitos) en clase-08/datos/
+# para que el deploy funcione. rsconnect sube automáticamente todos los
+# archivos de la carpeta de la app, así que no hace falta hacer nada más.
 # =============================================================================
 
-# install.packages("rsconnect")
+# install.packages(c("rsconnect", "leaflet"))
 library(rsconnect)
 
 # Pegá acá tus credenciales (las obtenés en shinyapps.io -> Account -> Tokens):
@@ -25,9 +26,9 @@ library(rsconnect)
 # Publicar la app (ejecutar parado en la carpeta clase-08/):
 rsconnect::deployApp(
   appDir  = ".",
-  appName = "censo-uruguay-2023",
-  appTitle = "Tablero Censo 2023 - Uruguay"
+  appName = "elecciones-uruguay-2024",
+  appTitle = "Elecciones Nacionales 2024 - Uruguay"
 )
 
 # Al terminar, R abre la URL pública, del tipo:
-#   https://TU_USUARIO.shinyapps.io/censo-uruguay-2023/
+#   https://TU_USUARIO.shinyapps.io/elecciones-uruguay-2024/
