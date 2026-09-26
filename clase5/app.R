@@ -1,5 +1,5 @@
 # =============================================================================
-# CLASE 4 · Entradas (inputs) y salidas (outputs)
+# CLASE 5 · El motor reactivo
 #
 # =============================================================================
 
@@ -12,7 +12,7 @@ library(bslib)
 TITULO <- "Tablero de la Elección Nacional 2024"
 
 # COLORES
-COLOR_PRINCIPAL  <- "#5A189A"   # barras del gráfico, pestaña activa, números grandes
+COLOR_PRINCIPAL  <- "#5A189A"   # barras del gráfico, botón, pestaña activa, números grandes
 COLOR_SECUNDARIO <- "#9D4EDD"
 COLOR_FONDO      <- "#FFFFFF"   # fondo de la página
 COLOR_TEXTO      <- "#2E0A4E"   # color de las letras
@@ -29,11 +29,15 @@ LADO_BARRA <- "left"
 ESTILO_PESTANAS <- "pills"
 
 # Menú de regiones. TRUE deja elegir varias, FALSE deja elegir una sola.
-# Mirá en la pestaña "Qué devuelve cada input" cómo cambia el valor.
 REGIONES_MULTIPLES <- TRUE
 
 # Alto del gráfico, en píxeles
 ALTO_GRAFICO <- "500px"
+
+# Cuándo se actualizan los resultados.
+# TRUE  solo al apretar el botón "Aplicar filtros".
+# FALSE apenas se mueve un filtro, sin botón.
+USAR_BOTON <- TRUE
 
 # Formato de la tabla
 TABLA_RAYADA  <- TRUE     # filas alternadas con fondo gris
@@ -71,22 +75,22 @@ options(scipen = 999)
 ################################################################################
 # INTERFAZ (UI)
 
-# Pieza A. La barra lateral con los tres INPUTS.
-# Cada input tiene un id (el primer argumento) y el server lo lee con input$id.
+# Pieza A. La barra lateral con los inputs (los mismos de la Clase 4).
 barra <- sidebarPanel(
   h4("Filtros"),
 
-  # 1) Menú desplegable. Devuelve un texto, o varios si multiple = TRUE.
   selectInput("region", "Región:",
               choices = regiones, selected = regiones,
               multiple = REGIONES_MULTIPLES),
 
-  # 2) Deslizador. Devuelve un número.
   sliderInput("participacion", "Participación mínima (%):",
               min = 88, max = 92, value = 88, step = 0.5),
 
-  # 3) Texto libre. Devuelve lo que se escriba.
   textInput("titulo", "Título del gráfico:", value = "Votos emitidos"),
+
+  # Botón nuevo. Solo aparece si USAR_BOTON es TRUE.
+  # Un botón devuelve cuántas veces se apretó (0, 1, 2...).
+  if (USAR_BOTON) actionButton("aplicar", "Aplicar filtros", class = "btn-primary"),
 
   hr(),   # línea divisoria
 
@@ -100,8 +104,7 @@ numeros <- fluidRow(
   column(4, h5("Emitidos"),      h2(textOutput("emitidos"),    class = "text-primary"))
 )
 
-# Pieza C. Las pestañas. Cada una muestra un tipo de OUTPUT distinto.
-# Cada output reserva un lugar con un id, y el server lo rellena.
+# Pieza C. Las pestañas (las mismas de la Clase 4).
 pestanas <- tabsetPanel(
   type = ESTILO_PESTANAS,
 
@@ -118,7 +121,6 @@ pestanas <- tabsetPanel(
            p("Esto es lo que recibe el server. Cambiá los filtros y mirá."),
            verbatimTextOutput("consola")),
 
-  # La misma pestaña de ayuda de la Clase 3.
   tabPanel("Ayuda",
            br(),
            p(strong("Habilitados"), "son las personas inscriptas para votar."),
@@ -151,36 +153,50 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-  # Cada output tiene su función render. textOutput va con renderText,
-  # plotOutput con renderPlot, tableOutput con renderTable y
-  # verbatimTextOutput con renderPrint.
-
-  # Todos repiten el mismo filtro, por región y por participación mínima.
-  # Más adelante aprendemos a escribirlo una sola vez.
-
-  output$n_deptos <- renderText({
+  # 1) reactive(). El filtro se escribe UNA sola vez.
+  # En la Clase 4 lo repetíamos en cada output. Ahora vive acá, y cada output
+  # lo usa llamando a datos_filtrados() (con paréntesis, como una función).
+  # Se vuelve a calcular solo cuando cambia input$region o input$participacion.
+  datos_filtrados <- reactive({
+    req(input$region)   # si no hay ninguna región elegida, espera sin error
     d <- elecciones[elecciones$region %in% input$region &
                     elecciones$participacion_pct >= input$participacion, ]
-    nrow(d)
+    req(nrow(d) > 0)    # si no queda ningún departamento, espera sin error
+    d
+  })
+
+  # 2) eventReactive(). Lo mismo, pero se actualiza SOLO al apretar el botón.
+  # ignoreNULL = FALSE hace que calcule una vez al abrir la app, sin esperar
+  # el primer clic.
+  datos_con_boton <- eventReactive(input$aplicar, {
+    datos_filtrados()
+  }, ignoreNULL = FALSE)
+
+  # Elegimos cuál de los dos usan los outputs (USAR_BOTON, zona de pruebas).
+  if (USAR_BOTON) {
+    datos <- datos_con_boton
+  } else {
+    datos <- datos_filtrados
+  }
+
+  # De acá para abajo, todos los outputs usan datos().
+
+  output$n_deptos <- renderText({
+    nrow(datos())
   })
 
   output$habilitados <- renderText({
-    d <- elecciones[elecciones$region %in% input$region &
-                    elecciones$participacion_pct >= input$participacion, ]
-    format(sum(d$habilitados), big.mark = ".", decimal.mark = ",")
+    format(sum(datos()$habilitados), big.mark = ".", decimal.mark = ",")
   })
 
   output$emitidos <- renderText({
-    d <- elecciones[elecciones$region %in% input$region &
-                    elecciones$participacion_pct >= input$participacion, ]
-    format(sum(d$emitidos), big.mark = ".", decimal.mark = ",")
+    format(sum(datos()$emitidos), big.mark = ".", decimal.mark = ",")
   })
 
-  # Un gráfico de barras hecho con R base. El título sale del textInput.
+  # El título lee input$titulo directamente, así que cambia apenas se escribe,
+  # aunque el botón esté activado. Los datos, en cambio, esperan al botón.
   output$grafico <- renderPlot({
-    d <- elecciones[elecciones$region %in% input$region &
-                    elecciones$participacion_pct >= input$participacion, ]
-    req(nrow(d) > 0)           # si no queda ningún departamento, no dibuja nada
+    d <- datos()
     d <- d[order(d$emitidos), ]
     par(mar = c(4, 9, 3, 1))   # deja lugar a la izquierda para los nombres
     barplot(d$emitidos, names.arg = d$departamento, horiz = TRUE, las = 1,
@@ -189,8 +205,7 @@ server <- function(input, output, session) {
   })
 
   output$tabla <- renderTable({
-    d <- elecciones[elecciones$region %in% input$region &
-                    elecciones$participacion_pct >= input$participacion, ]
+    d <- datos()
     d[order(-d$emitidos),
       c("departamento", "region", "habilitados", "emitidos", "participacion_pct")]
   },
@@ -199,12 +214,13 @@ server <- function(input, output, session) {
   spacing  = TABLA_ESPACIO
   )
 
-  # renderPrint() muestra lo mismo que R mostraría en la consola.
+  # Ahora también mostramos el botón. Fijate cómo suma 1 en cada clic.
   output$consola <- renderPrint({
     list(
       region        = input$region,
       participacion = input$participacion,
-      titulo        = input$titulo
+      titulo        = input$titulo,
+      aplicar       = as.numeric(input$aplicar)   # as.numeric() muestra solo el número
     )
   })
 }
