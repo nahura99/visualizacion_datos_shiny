@@ -129,6 +129,10 @@ barra <- sidebar(
   sliderInput("participacion", "Participación mínima (%):",
               min = 88, max = 92, value = 88, step = 0.5),
 
+  # CSS propio. Oculta las etiquetas 88 y 92 de arriba del deslizador, que
+  # repiten lo que ya dice la escala de abajo.
+  tags$style(".irs-min, .irs-max { visibility: hidden !important; }"),
+
   textInput("titulo", "Título del gráfico:", value = "Votos emitidos"),
 
   if (USAR_BOTON) actionButton("aplicar", "Aplicar filtros", class = "btn-primary"),
@@ -201,10 +205,6 @@ ui <- page_navbar(
   nav_panel("Gráficos", panel_graficos),
   nav_panel("Tablas",   panel_tablas),
   nav_panel("Mapas",    panel_mapas),
-
-  nav_panel("Qué devuelve cada input",
-            card(card_header("Esto es lo que recibe el server"),
-                 verbatimTextOutput("consola"))),
 
   nav_panel("Ayuda",
             card(card_header("Cómo leer estos datos"),
@@ -345,6 +345,9 @@ server <- function(input, output, session) {
   # ---- Panel de mapas (leaflet, nuevo) ---------------------------------------
   # Un mapa de leaflet también se arma por partes, unidas con |>
   #   leaflet(datos)              los datos
+  #   leafletOptions(scrollWheelZoom = FALSE)  la rueda del mouse no hace zoom,
+  #                               así la página baja sin mover el mapa. El zoom
+  #                               queda en los botones + y -.
   #   addProviderTiles()          el fondo (calles, satélite...)
   #   addCircleMarkers()          un círculo por local, en Longitud y Latitud
   #   addLegend()                 la leyenda
@@ -355,7 +358,7 @@ server <- function(input, output, session) {
   output$m_ganador <- renderLeaflet({
     l <- locales_filtrados()
     colores <- colorFactor(COLORES_LEMAS, levels = names(COLORES_LEMAS))
-    leaflet(l) |>
+    leaflet(l, options = leafletOptions(scrollWheelZoom = FALSE)) |>
       addProviderTiles(FONDO_MAPA) |>
       addCircleMarkers(lng = ~Longitud, lat = ~Latitud, label = ~NombreLocal,
                        color = ~colores(LemaGanador), radius = TAMANO_PUNTOS,
@@ -368,7 +371,7 @@ server <- function(input, output, session) {
   output$m_fa <- renderLeaflet({
     l <- locales_filtrados()
     colores <- colorNumeric(PALETA_MAPAS, domain = l$Pct_Frente_Amplio)
-    leaflet(l) |>
+    leaflet(l, options = leafletOptions(scrollWheelZoom = FALSE)) |>
       addProviderTiles(FONDO_MAPA) |>
       addCircleMarkers(lng = ~Longitud, lat = ~Latitud, label = ~NombreLocal,
                        color = ~colores(Pct_Frente_Amplio), radius = TAMANO_PUNTOS,
@@ -380,7 +383,7 @@ server <- function(input, output, session) {
   output$m_pn <- renderLeaflet({
     l <- locales_filtrados()
     colores <- colorNumeric(PALETA_MAPAS, domain = l$Pct_Partido_Nacional)
-    leaflet(l) |>
+    leaflet(l, options = leafletOptions(scrollWheelZoom = FALSE)) |>
       addProviderTiles(FONDO_MAPA) |>
       addCircleMarkers(lng = ~Longitud, lat = ~Latitud, label = ~NombreLocal,
                        color = ~colores(Pct_Partido_Nacional), radius = TAMANO_PUNTOS,
@@ -392,7 +395,7 @@ server <- function(input, output, session) {
   output$m_art11 <- renderLeaflet({
     l <- locales_filtrados()
     colores <- colorNumeric(PALETA_MAPAS, domain = l$PctSiArt11)
-    leaflet(l) |>
+    leaflet(l, options = leafletOptions(scrollWheelZoom = FALSE)) |>
       addProviderTiles(FONDO_MAPA) |>
       addCircleMarkers(lng = ~Longitud, lat = ~Latitud, label = ~NombreLocal,
                        color = ~colores(PctSiArt11), radius = TAMANO_PUNTOS,
@@ -400,16 +403,6 @@ server <- function(input, output, session) {
       addLegend(pal = colores, values = ~PctSiArt11, title = "% SÍ")
   })
 
-  # ---- Qué devuelve cada input ----------------------------------------------
-
-  output$consola <- renderPrint({
-    list(
-      region        = input$region,
-      participacion = input$participacion,
-      titulo        = input$titulo,
-      aplicar       = as.numeric(input$aplicar)
-    )
-  })
 }
 
 ################################################################################
