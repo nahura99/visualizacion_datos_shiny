@@ -4,15 +4,14 @@ Este repositorio reúne los materiales del curso _Visualización interactiva de 
 
 | Carpeta | Tema | Qué se construye |
 |---|---|---|
-| Clase 1 | Presentación del curso | Presentación, programas y ejemplos de apps Shiny publicadas. |
-| Clase 1b | Opcional - Nivelación en R | Instalar R y RStudio, lo básico de R y la primera app de Shiny. |
+| Clase 1 | Presentación del curso y primeros pasos | Presentación, programa y ejemplos de apps Shiny publicadas. Instalar R y RStudio, lo básico de R y la primera app con datos. |
 | Clase 2 | Bases de RStudio,Shiny | Un menú que cambia un texto y una tabla fija. |
 | Clase 3 | UI - Interfaz de Usuario | Barra lateral, filas, columnas y pestañas. |
 | Clase 4 | Inputs y outputs | Filtros, gráfico de barras, tabla y textos. |
 | Clase 5 | Reactividad | El filtro escrito una sola vez y un botón para aplicarlo. |
 | Clase 6 | Gráficos dinámicos | Gráficos con ggplot2 y uno interactivo con plotly. |
-| Clase 7 | Estética, navegación | Barra de navegación, cajas de números, tarjetas y tabla interactiva. |
-| Clase 8 | App final. Publicación | Gráficos, tablas y mapas en tres paneles, publicados en shinyapps.io. |
+| Clase 7 | Estética, app final y publicación | Barra de navegación, cajas de números, tarjetas y tablas interactivas. Gráficos, tablas y mapas en tres paneles, publicados en shinyapps.io. |
+| Clase Extra (revisor_corpus) | Tus datos y lo que faltaba | Revisar el corpus propio antes de armar su app, mensajes claros y límites de Shiny. |
 
 El curso está pensado como un taller y se apoya en una sola aplicación que crece de clase en clase. En la primera sesión la app es apenas un título y una tabla. En la última es un tablero completo con gráficos, tablas y mapas, publicado en internet. Cada clase suma un paso concreto y visible sobre la anterior, de modo que quien sigue el recorrido puede ver en pantalla qué cambió y ubicar en el código la parte que produjo ese cambio. El código se mantiene deliberadamente sencillo y todo lo que aparece se explica en clase.
 
