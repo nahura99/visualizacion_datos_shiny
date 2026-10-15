@@ -1,5 +1,5 @@
 # =============================================================================
-# PUBLICAR LA APP EN shinyapps.io · Clase 8
+# PUBLICAR LA APP EN shinyapps.io · Clase 7
 #
 # =============================================================================
 
@@ -20,7 +20,7 @@ install.packages("rsconnect")
 
 ################################################################################
 
-# Publicar. Correr este archivo parado en la carpeta clase8.
+# Publicar. Correr este archivo parado en la carpeta clase7.
 rsconnect::deployApp(appName = "elecciones-uruguay-2024")
 
 # Al terminar se abre la dirección pública, que tiene esta forma

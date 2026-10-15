@@ -1,5 +1,5 @@
 # =============================================================================
-# CLASE 0 · Primeros pasos con R y RStudio
+# CLASE 1 · Primeros pasos con R y RStudio
 #
 # Este archivo NO es una app. Es un guion para correr de a una línea.
 # Poné el cursor en una línea y apretá Ctrl + Enter (Cmd + Enter en Mac).
@@ -14,7 +14,7 @@
 # 2. Instalar RStudio Desktop desde https://posit.co/download/rstudio-desktop
 # 3. Abrir el archivo visualizacion_datos_shiny.Rproj con doble clic.
 #    Así RStudio abre el PROYECTO del curso y sabe dónde están los datos.
-# 4. Desde el panel de archivos (abajo a la derecha) abrir clase0/primeros_pasos.R
+# 4. Desde el panel de archivos (abajo a la derecha) abrir clase1/primeros_pasos.R
 
 # Todo lo que empieza con # es un COMENTARIO. R no lo ejecuta. Sirve para
 # explicar el código a quien lo lea, incluso a vos dentro de un mes.
@@ -131,5 +131,5 @@ barplot(elecciones$emitidos, names.arg = elecciones$departamento, las = 2)
 
 ################################################################################
 # 10) Y AHORA, SHINY
-# Abrí clase0/app.R y apretá el botón "Run App" (arriba del script).
+# Abrí clase1/app.R y apretá el botón "Run App" (arriba del script).
 # Para cerrar la app, apretá el botón rojo de STOP en la consola o Esc.

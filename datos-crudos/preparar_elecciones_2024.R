@@ -10,7 +10,7 @@
 # es más completo: además de participación, trae el lema ganador, el margen y
 # los votos de cada partido por departamento, y su par georreferenciado
 # (`datos/elecciones_locales_2024.csv` / `elecciones_circuitos_2024.csv`) se
-# usa en el mapa de la Clase 8. Se construyó siguiendo exactamente el
+# usa en el mapa de la Clase 7. Se construyó siguiendo exactamente el
 # procedimiento que describe la NOTA (avanzado) al final de este archivo, más
 # una etapa de geocodificación de cada local de votación. Este script queda
 # como el punto de partida más simple para quien quiera reproducir ese
@@ -97,7 +97,7 @@ print(participacion)
 #   - "Desglose de votos"  (votos por hoja de votación en cada circuito)
 #   - "Integración de hojas de votación"  (mapea cada hoja -> partido/lema)
 # El procedimiento es: leer desglose, unir con la tabla de hojas por el número
-# de hoja, y agregar por (departamento, partido). Para el mapa de la Clase 8,
+# de hoja, y agregar por (departamento, partido). Para el mapa de la Clase 7,
 # además, cada local de votación se cruza con el plan circuital (para saber en
 # qué edificio funciona cada circuito) y se geocodifica con el servicio
 # oficial de IDE Uruguay (direcciones.ide.uy). Se deja como ejercicio /

@@ -1,10 +1,10 @@
 # Datos
 
-La app principal del curso (clases 2 a 9) se construye sobre los resultados de la **Elección Nacional 2024** de Uruguay.
+La app principal del curso (clases 2 a 7) se construye sobre los resultados de la **Elección Nacional 2024** de Uruguay.
 
 ## `elecciones_departamento_2024.csv`
 
-Resultados agregados por departamento (19 filas). Es el dataset que usan las clases 2 a 8 y los paneles de gráficos y tablas de la Clase 9.
+Resultados agregados por departamento (19 filas). Es el dataset que usan las clases 2 a 7, incluidos los paneles de gráficos y tablas de la app final (Clase 7).
 
 | Columna | Descripción |
 |---------|-------------|
@@ -25,7 +25,7 @@ Resultados agregados por departamento (19 filas). Es el dataset que usan las cla
 
 ## `elecciones_locales_2024.csv` y `elecciones_circuitos_2024.csv`
 
-Los mismos resultados, pero georreferenciados y sin agregar por departamento. Es lo que consumen el histograma de la Clase 7 y los paneles de tablas y mapas de la Clase 9.
+Los mismos resultados, pero georreferenciados y sin agregar por departamento. Es lo que consumen los paneles de tablas y mapas de la app final (Clase 7).
 
 - **`elecciones_locales_2024.csv`** — 2.521 filas, una por local de votación (suma los circuitos que funcionan en el mismo edificio). Es la unidad recomendada para el mapa.
 - **`elecciones_circuitos_2024.csv`** — 7.352 filas, una por Departamento + CRV. Es la unidad oficial del escrutinio, con el máximo detalle.

@@ -1,5 +1,5 @@
 # =============================================================================
-# CLASE 7 · Estética y navegación
+# CLASE 7 · Estética, la app final y su publicación
 #
 # =============================================================================
 
@@ -8,6 +8,7 @@ library(bslib)
 library(ggplot2)   # gráficos
 library(plotly)    # gráficos interactivos (zoom y datos al pasar el mouse)
 library(DT)        # tablas interactivas (buscar, ordenar, paginar)
+library(leaflet)   # mapas interactivos (nuevo)
 
 ################################################################################
 
@@ -16,7 +17,7 @@ TITULO <- "Elecciones 2024 · Uruguay"
 
 # COLORES
 COLOR_PRINCIPAL  <- "#5A189A"   # cajas de números, barras, botón, links
-COLOR_SECUNDARIO <- "#9D4EDD"
+COLOR_SECUNDARIO <- "#9D4EDD"   # barras de participación
 COLOR_FONDO      <- "#FFFFFF"   # fondo de la página
 COLOR_TEXTO      <- "#2E0A4E"   # color de las letras
 COLOR_NAVEGACION <- "#2E0A4E"   # barra de navegación de arriba (nuevo)
@@ -32,7 +33,7 @@ LADO_BARRA <- "left"
 # Menú de regiones. TRUE deja elegir varias, FALSE deja elegir una sola.
 REGIONES_MULTIPLES <- TRUE
 
-# Alto de los gráficos, en píxeles
+# Alto de los gráficos y mapas del Resumen y la Dispersión, en píxeles
 ALTO_GRAFICO <- "500px"
 
 # Cuándo se actualizan los resultados.
@@ -42,14 +43,23 @@ USAR_BOTON <- TRUE
 
 # Aspecto de los gráficos de ggplot2. Probá theme_classic(), theme_bw(),
 # theme_light() o theme_void(). base_size es el tamaño de la letra.
-TEMA_GRAFICO <- theme_minimal(base_size = 14)
+TEMA_GRAFICO <- theme_minimal(base_size = 13)
 
-# Colores de las regiones en el gráfico de dispersión. Probá "Set1", "Set2",
+# Colores de las regiones en los gráficos de puntos. Probá "Set1", "Set2",
 # "Paired", "Accent" o "Spectral".
 PALETA_REGIONES <- "Dark2"
 
-# Filas que muestra la tabla en cada página (nuevo). Probá 5 o 19.
+# Filas que muestran las tablas en cada página (nuevo). Probá 5 o 19.
 FILAS_POR_PAGINA <- 10
+
+# Mapas (nuevo)
+# Fondo del mapa. Probá "Esri.WorldGrayCanvas", "Esri.WorldImagery" (satélite)
+# o "OpenTopoMap".
+FONDO_MAPA <- "OpenStreetMap"
+# Tamaño de los puntos (locales de votación)
+TAMANO_PUNTOS <- 4
+# Colores de los mapas de porcentajes. Probá "Purples", "Blues", "Greens" o "magma".
+PALETA_MAPAS <- "viridis"
 
 # Fin de la ZONA DE PRUEBAS ==============================
 ################################################################################
@@ -78,13 +88,37 @@ tema_curso <- bs_theme(
 
 # CODIGO ESTATICO
 
-elecciones <- read.csv("../datos/elecciones_departamento_2024.csv", encoding = "UTF-8")
+# Para PUBLICAR la app, los datos tienen que viajar con ella. Por eso esta
+# clase tiene su propia carpeta datos/ con una copia de los CSV, y la ruta
+# ya no empieza con "../" como en las clases anteriores.
+elecciones <- read.csv("datos/elecciones_departamento_2024.csv", encoding = "UTF-8")
+locales    <- read.csv("datos/elecciones_locales_2024.csv",      encoding = "UTF-8")
+censo      <- read.csv("datos/censo_departamentos.csv",          encoding = "UTF-8")
+
+# Nos quedamos con los locales que tienen coordenadas y un lema ganador.
+locales <- locales[!is.na(locales$Latitud) & locales$LemaGanador != "", ]
 
 # Vector con las regiones (para el menú desplegable).
 regiones <- sort(unique(elecciones$region))
 
+# Colores de los partidos. Se mantienen fijos para no perder su significado.
+COLORES_LEMAS <- c("Frente Amplio"    = "#1F4FA3",
+                   "Partido Nacional" = "#7FB3E8",
+                   "Partido Colorado" = "#D94F3D")
+
+# Opciones de las tablas DT, escritas una sola vez para las cuatro tablas.
+# language traduce los textos de la tabla al español.
+OPCIONES_TABLAS <- list(
+  pageLength = FILAS_POR_PAGINA,
+  language   = list(url = "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json")
+)
+
 # Muestra los números enteros (400000) en vez de notación científica (4e+05).
 options(scipen = 999)
+
+# Al publicar, TRUE esconde el detalle técnico de los errores a los visitantes.
+# Mientras desarrollás, dejalo en FALSE para ver qué falló.
+options(shiny.sanitize.errors = FALSE)
 
 
 
@@ -105,12 +139,16 @@ barra <- sidebar(
   sliderInput("participacion", "Participación mínima (%):",
               min = 88, max = 92, value = 88, step = 0.5),
 
+  # CSS propio. Oculta las etiquetas 88 y 92 de arriba del deslizador, que
+  # repiten lo que ya dice la escala de abajo.
+  tags$style(".irs-min, .irs-max { visibility: hidden !important; }"),
+
   textInput("titulo", "Título del gráfico:", value = "Votos emitidos"),
 
   # Solo aparece si USAR_BOTON es TRUE.
   if (USAR_BOTON) actionButton("aplicar", "Aplicar filtros", class = "btn-primary"),
 
-  p("Fuente: Corte Electoral")
+  p("Fuente: Corte Electoral e INE")
 )
 
 # Pieza B. Los tres números, ahora en value_box().
@@ -126,10 +164,50 @@ numeros <- layout_columns(
             showcase = icon("check"), theme = "primary")
 )
 
+# Piezas C, D y E. Los tres paneles, con cuatro tarjetas cada uno.
+# Cada gráfico, tabla o mapa va dentro de card(), una tarjeta con un título
+# (card_header).
+# layout_columns(col_widths = 6) pone las tarjetas de a dos por fila (6 + 6 = 12).
+
+panel_graficos <- layout_columns(
+  col_widths = 6,
+  card(card_header("Participación y voto al Frente Amplio"),
+       plotlyOutput("dispersion")),
+  card(card_header("Lema ganador por departamento"),
+       plotOutput("g_ganador")),
+  card(card_header("Plebiscitos, SÍ al Art. 11 y SÍ al Art. 67"),
+       plotOutput("g_plebiscitos")),
+  card(card_header("Participación por departamento"),
+       plotOutput("g_participacion"))
+)
+
+panel_tablas <- layout_columns(
+  col_widths = 6,
+  card(card_header("Resultados por departamento"),
+       DTOutput("tabla", fill = FALSE)),
+  card(card_header("Totales por región"),
+       DTOutput("t_regiones", fill = FALSE)),
+  card(card_header("Locales de votación"),
+       DTOutput("t_locales", fill = FALSE)),
+  card(card_header("Población (Censos 2011 y 2023)"),
+       DTOutput("t_censo", fill = FALSE))
+)
+
+panel_mapas <- layout_columns(
+  col_widths = 6,
+  card(card_header("Lema ganador en cada local de votación"),
+       leafletOutput("m_ganador")),
+  card(card_header("Voto al Frente Amplio (%)"),
+       leafletOutput("m_fa")),
+  card(card_header("Voto al Partido Nacional (%)"),
+       leafletOutput("m_pn")),
+  card(card_header("SÍ al Art. 11 (%)"),
+       leafletOutput("m_art11"))
+)
+
 # Armamos la página con page_navbar().
 # Cambia la forma de la página. Las pestañas pasan a una barra de navegación
-# arriba, y cada una es un nav_panel(). Los gráficos van dentro de card(),
-# tarjetas con un título (card_header).
+# arriba, y cada una es un nav_panel().
 ui <- page_navbar(
   title    = TITULO,
   theme    = tema_curso,
@@ -142,36 +220,29 @@ ui <- page_navbar(
             card(card_header("Votos emitidos por departamento"),
                  plotOutput("grafico", height = ALTO_GRAFICO))),
 
-  nav_panel("Dispersión",
-            card(card_header("Participación y voto al Frente Amplio"),
-                 p("Pasá el mouse por un punto para ver el departamento."),
-                 plotlyOutput("dispersion", height = ALTO_GRAFICO))),
-
-  nav_panel("Tabla",
-            card(card_header("Resultados por departamento"),
-                 DTOutput("tabla", fill = FALSE))),
-
-  nav_panel("Qué devuelve cada input",
-            card(card_header("Esto es lo que recibe el server"),
-                 verbatimTextOutput("consola"))),
+  nav_panel("Gráficos", panel_graficos),
+  nav_panel("Tablas",   panel_tablas),
+  nav_panel("Mapas",    panel_mapas),
 
   nav_panel("Ayuda",
             card(card_header("Cómo leer estos datos"),
                  p(strong("Habilitados"), "son las personas inscriptas para votar."),
                  p(strong("Emitidos"), "son los votos efectivamente depositados."),
-                 p(strong("Participación"), "es emitidos sobre habilitados, en %.")))
+                 p(strong("Participación"), "es emitidos sobre habilitados, en %."),
+                 p(strong("Locales de votación"), "son los edificios donde se vota.",
+                   "Cada punto de los mapas es uno.")))
 )
 
 
 
 ################################################################################
 # SERVIDOR (SERVER)
-# Casi igual que en la Clase 6. Solo cambia la tabla, que ahora es DT.
 
 
 server <- function(input, output, session) {
 
-  # El filtro, una sola vez (Clase 5).
+  # ---- Los datos filtrados (Clase 5) ----------------------------------------
+
   datos_filtrados <- reactive({
     req(input$region)
     d <- elecciones[elecciones$region %in% input$region &
@@ -180,7 +251,6 @@ server <- function(input, output, session) {
     d
   })
 
-  # La misma idea, pero solo al apretar el botón (Clase 5).
   datos_con_boton <- eventReactive(input$aplicar, {
     datos_filtrados()
   }, ignoreNULL = FALSE)
@@ -190,6 +260,18 @@ server <- function(input, output, session) {
   } else {
     datos <- datos_filtrados
   }
+
+  # Los locales y el censo de los departamentos que quedaron en datos().
+  # Así los filtros de la barra también mueven las tablas y los mapas.
+  locales_filtrados <- reactive({
+    locales[locales$DepartamentoNombre %in% datos()$departamento, ]
+  })
+
+  censo_filtrado <- reactive({
+    censo[censo$departamento %in% datos()$departamento, ]
+  })
+
+  # ---- Resumen ------------------------------------------------------------------
 
   output$n_deptos <- renderText({
     nrow(datos())
@@ -203,7 +285,6 @@ server <- function(input, output, session) {
     format(sum(datos()$emitidos), big.mark = ".", decimal.mark = ",")
   })
 
-  # Barras con ggplot2 (Clase 6).
   output$grafico <- renderPlot({
     ggplot(datos(), aes(x = emitidos, y = reorder(departamento, emitidos))) +
       geom_col(fill = COLOR_PRINCIPAL) +
@@ -211,37 +292,137 @@ server <- function(input, output, session) {
       TEMA_GRAFICO
   })
 
-  # Dispersión con plotly (Clase 6).
+  # ---- Panel de gráficos -----------------------------------------------------
+
+  # 1) Dispersión con plotly (Clase 6).
   output$dispersion <- renderPlotly({
     g <- ggplot(datos(), aes(x = participacion_pct, y = pct_frente_amplio,
                              colour = region, text = departamento)) +
-      geom_point(size = 4) +
+      geom_point(size = 3) +
       scale_colour_brewer(palette = PALETA_REGIONES) +
       labs(x = "Participación (%)", y = "Votos al Frente Amplio (%)", colour = "Región") +
       TEMA_GRAFICO
     ggplotly(g, tooltip = "text")
   })
 
-  # Tabla nueva con DT. En la app se puede buscar, ordenar haciendo clic en
-  # una columna y pasar de página.
-  # rownames = FALSE saca la columna de números de fila.
-  # language traduce los textos de la tabla al español.
-  output$tabla <- renderDT({
-    d <- datos()
-    d <- d[, c("departamento", "region", "habilitados", "emitidos", "participacion_pct")]
-    datatable(d, rownames = FALSE,
-              options = list(pageLength = FILAS_POR_PAGINA,
-                             language = list(url = "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json")))
+  # 2) Barras coloreadas por el lema que ganó en cada departamento.
+  output$g_ganador <- renderPlot({
+    ggplot(datos(), aes(x = pct_ganador, y = reorder(departamento, pct_ganador),
+                        fill = lema_ganador)) +
+      geom_col() +
+      scale_fill_manual(values = COLORES_LEMAS) +
+      labs(x = "% del lema ganador", y = NULL, fill = NULL) +
+      TEMA_GRAFICO
   })
 
-  output$consola <- renderPrint({
-    list(
-      region        = input$region,
-      participacion = input$participacion,
-      titulo        = input$titulo,
-      aplicar       = as.numeric(input$aplicar)
-    )
+  # 3) Un punto por departamento con el SÍ a cada plebiscito.
+  output$g_plebiscitos <- renderPlot({
+    ggplot(datos(), aes(x = pct_si_art11, y = pct_si_art67, colour = region)) +
+      geom_point(size = 3) +
+      scale_colour_brewer(palette = PALETA_REGIONES) +
+      labs(x = "SÍ al Art. 11 (%)", y = "SÍ al Art. 67 (%)", colour = "Región") +
+      TEMA_GRAFICO
   })
+
+  # 4) Barras de participación.
+  output$g_participacion <- renderPlot({
+    ggplot(datos(), aes(x = participacion_pct, y = reorder(departamento, participacion_pct))) +
+      geom_col(fill = COLOR_SECUNDARIO) +
+      coord_cartesian(xlim = c(85, 93)) +   # empieza en 85 para que se vean las diferencias
+      labs(x = "Participación (%)", y = NULL) +
+      TEMA_GRAFICO
+  })
+
+  # ---- Panel de tablas (DT, nuevo) ---------------------------------------------
+  # En la app se puede buscar, ordenar haciendo clic en una columna y pasar
+  # de página. rownames = FALSE saca la columna de números de fila.
+
+  # 1) Por departamento.
+  output$tabla <- renderDT({
+    d <- datos()[, c("departamento", "region", "habilitados", "emitidos", "participacion_pct")]
+    datatable(d, rownames = FALSE, options = OPCIONES_TABLAS)
+  })
+
+  # 2) Por región. aggregate() suma las columnas para cada región.
+  output$t_regiones <- renderDT({
+    r <- aggregate(cbind(habilitados, emitidos) ~ region, data = datos(), FUN = sum)
+    datatable(r, rownames = FALSE, options = OPCIONES_TABLAS)
+  })
+
+  # 3) Locales de votación.
+  output$t_locales <- renderDT({
+    l <- locales_filtrados()[, c("DepartamentoNombre", "Localidad", "NombreLocal",
+                                 "TotalHabilitados", "LemaGanador")]
+    datatable(l, rownames = FALSE, options = OPCIONES_TABLAS)
+  })
+
+  # 4) Censo.
+  output$t_censo <- renderDT({
+    p <- censo_filtrado()[, c("departamento", "poblacion_2011", "poblacion_2023", "variacion_pct")]
+    datatable(p, rownames = FALSE, options = OPCIONES_TABLAS)
+  })
+
+  # ---- Panel de mapas (leaflet, nuevo) ---------------------------------------
+  # Un mapa de leaflet también se arma por partes, unidas con |>
+  #   leaflet(datos)              los datos
+  #   leafletOptions(scrollWheelZoom = FALSE)  la rueda del mouse no hace zoom,
+  #                               así la página baja sin mover el mapa. El zoom
+  #                               queda en los botones + y -.
+  #   addProviderTiles()          el fondo (calles, satélite...)
+  #   addCircleMarkers()          un círculo por local, en Longitud y Latitud
+  #   addLegend()                 la leyenda
+  # El ~ delante de un nombre (~Latitud) quiere decir "la columna Latitud".
+  # colorFactor() y colorNumeric() arman la escala de colores.
+
+  # 1) Lema ganador. colorFactor() da un color a cada categoría.
+  output$m_ganador <- renderLeaflet({
+    l <- locales_filtrados()
+    colores <- colorFactor(COLORES_LEMAS, levels = names(COLORES_LEMAS))
+    leaflet(l, options = leafletOptions(scrollWheelZoom = FALSE)) |>
+      addProviderTiles(FONDO_MAPA) |>
+      addCircleMarkers(lng = ~Longitud, lat = ~Latitud, label = ~NombreLocal,
+                       color = ~colores(LemaGanador), radius = TAMANO_PUNTOS,
+                       stroke = FALSE, fillOpacity = 0.8) |>
+      addLegend(pal = colores, values = names(COLORES_LEMAS), title = "Lema ganador")
+  })
+
+  # 2) % Frente Amplio. colorNumeric() va de claro (poco) a oscuro (mucho).
+  # domain son los valores que cubre la escala, del mínimo al máximo de la columna.
+  output$m_fa <- renderLeaflet({
+    l <- locales_filtrados()
+    colores <- colorNumeric(PALETA_MAPAS, domain = l$Pct_Frente_Amplio)
+    leaflet(l, options = leafletOptions(scrollWheelZoom = FALSE)) |>
+      addProviderTiles(FONDO_MAPA) |>
+      addCircleMarkers(lng = ~Longitud, lat = ~Latitud, label = ~NombreLocal,
+                       color = ~colores(Pct_Frente_Amplio), radius = TAMANO_PUNTOS,
+                       stroke = FALSE, fillOpacity = 0.8) |>
+      addLegend(pal = colores, values = ~Pct_Frente_Amplio, title = "% FA")
+  })
+
+  # 3) % Partido Nacional. Igual que el anterior, cambia la columna.
+  output$m_pn <- renderLeaflet({
+    l <- locales_filtrados()
+    colores <- colorNumeric(PALETA_MAPAS, domain = l$Pct_Partido_Nacional)
+    leaflet(l, options = leafletOptions(scrollWheelZoom = FALSE)) |>
+      addProviderTiles(FONDO_MAPA) |>
+      addCircleMarkers(lng = ~Longitud, lat = ~Latitud, label = ~NombreLocal,
+                       color = ~colores(Pct_Partido_Nacional), radius = TAMANO_PUNTOS,
+                       stroke = FALSE, fillOpacity = 0.8) |>
+      addLegend(pal = colores, values = ~Pct_Partido_Nacional, title = "% PN")
+  })
+
+  # 4) SÍ al Art. 11. Igual, cambia la columna.
+  output$m_art11 <- renderLeaflet({
+    l <- locales_filtrados()
+    colores <- colorNumeric(PALETA_MAPAS, domain = l$PctSiArt11)
+    leaflet(l, options = leafletOptions(scrollWheelZoom = FALSE)) |>
+      addProviderTiles(FONDO_MAPA) |>
+      addCircleMarkers(lng = ~Longitud, lat = ~Latitud, label = ~NombreLocal,
+                       color = ~colores(PctSiArt11), radius = TAMANO_PUNTOS,
+                       stroke = FALSE, fillOpacity = 0.8) |>
+      addLegend(pal = colores, values = ~PctSiArt11, title = "% SÍ")
+  })
+
 }
 
 ################################################################################

@@ -1,5 +1,5 @@
 # =============================================================================
-# CLASE 9 · Tus datos, lo que faltaba y los límites de Shiny
+# CLASE EXTRA · Tus datos, lo que faltaba y los límites de Shiny
 #
 # Una app para revisar tu propio corpus antes de construir tu Shiny.
 # Subís un CSV, la app lo lee, lo muestra y te dice si tiene problemas.
