@@ -1,15 +1,16 @@
 # =============================================================================
-# PUBLICAR LA APP EN shinyapps.io · Clase 7
+# PUBLICAR LA APP EN POSIT CONNECT CLOUD · Clase 7
 #
 # =============================================================================
 
 # Una sola vez
-#   1) Crear una cuenta gratuita en https://www.shinyapps.io
-#   2) Instalar el paquete que publica
+#   1) Crear una cuenta gratuita en https://connect.posit.cloud
+#   2) Instalar o actualizar el paquete que publica
 install.packages("rsconnect")
-#   3) En shinyapps.io ir a Account, después Tokens, apretar "Show" y copiar
-#      la línea rsconnect::setAccountInfo(...). Pegarla abajo y correrla.
-# rsconnect::setAccountInfo(name = "TU_USUARIO", token = "TU_TOKEN", secret = "TU_SECRET")
+#   3) Conectar R con tu cuenta. Se abre el navegador para autorizar.
+rsconnect::connectCloudUser()
+#   4) Revisar que la cuenta quedó conectada
+rsconnect::accounts()
 
 ################################################################################
 
@@ -20,11 +21,19 @@ install.packages("rsconnect")
 
 ################################################################################
 
-# Publicar. Correr este archivo parado en la carpeta clase7.
-rsconnect::deployApp(appName = "elecciones-uruguay-2024")
+# Publicar. Con el proyecto abierto, R está en la carpeta del curso, y appDir
+# le dice qué carpeta publicar.
+rsconnect::deployApp(appDir  = "clase7",
+                     appName = "elecciones-uruguay-2024")
 
-# Al terminar se abre la dirección pública, que tiene esta forma
-#   https://TU_USUARIO.shinyapps.io/elecciones-uruguay-2024/
+# Al terminar se abre la app en Posit Connect Cloud. La dirección tiene esta forma
+#   https://connect.posit.cloud/TU_USUARIO/content/...
+# Para publicar una versión nueva, corré otra vez deployApp().
 #
-# Si la app muestra una pantalla gris, mirar qué falló con
-rsconnect::showLogs()
+# Si la app muestra una pantalla gris, entrá a su página en Posit Connect Cloud.
+# El ícono Logs, a la derecha, muestra qué falló.
+
+################################################################################
+
+# Desafío opcional. Si llevás tu repositorio de GitHub, guardá también esta
+# versión con Commit y Push, como en la Clase 1.

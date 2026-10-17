@@ -14,6 +14,9 @@
 # 2. Instalar RStudio Desktop desde https://posit.co/download/rstudio-desktop
 # 3. Abrir el archivo visualizacion_datos_shiny.Rproj con doble clic.
 #    Así RStudio abre el PROYECTO del curso y sabe dónde están los datos.
+#    Un proyecto es una carpeta con un archivo .Rproj. Mientras está abierto,
+#    R trabaja desde esa carpeta. Su nombre aparece arriba a la derecha de
+#    RStudio. Si no aparece, File, Open Project y elegir el archivo .Rproj.
 # 4. Desde el panel de archivos (abajo a la derecha) abrir clase1/primeros_pasos.R
 
 # Todo lo que empieza con # es un COMENTARIO. R no lo ejecuta. Sirve para
@@ -133,3 +136,36 @@ barplot(elecciones$emitidos, names.arg = elecciones$departamento, las = 2)
 # 10) Y AHORA, SHINY
 # Abrí clase1/app.R y apretá el botón "Run App" (arriba del script).
 # Para cerrar la app, apretá el botón rojo de STOP en la consola o Esc.
+
+
+################################################################################
+# 11) DESAFÍO OPCIONAL, TU REPOSITORIO EN GITHUB
+# Este paso es OPCIONAL. El curso se puede hacer completo sin GitHub.
+# Git guarda versiones de tu código y GitHub las guarda en la web. Así podés
+# volver a una versión anterior, trabajar desde otra computadora y mostrar
+# tus apps.
+
+# Una sola vez
+# 1. Crear una cuenta gratuita en https://github.com
+# 2. Instalar Git desde https://git-scm.com (en Mac alcanza con escribir
+#    git --version en la Terminal y aceptar). Después reiniciar RStudio.
+# 3. Decirle a Git quién sos. Sacale el # a las dos líneas, poné tus datos
+#    y corrélas.
+# system('git config --global user.name "Tu Nombre"')
+# system('git config --global user.email "tu_correo@ejemplo.com"')
+# 4. En GitHub, New repository. Ponerle un nombre (por ejemplo mi_curso_shiny),
+#    marcar Add README y crearlo. Copiar la dirección del botón verde Code.
+# 5. En RStudio, File, New Project, Version Control, Git. Pegar la dirección,
+#    elegir dónde guardarlo y apretar Create Project. Tu repositorio queda
+#    abierto como un PROYECTO, con su propio .Rproj, igual que el del curso.
+
+# En cada clase
+# 6. Copiar a tu proyecto la carpeta datos/ y la carpeta de la clase en la
+#    que vas a trabajar (por ejemplo clase1/). Hacé tus cambios ahí. Así la
+#    ruta ../datos/ sigue funcionando.
+# 7. En la pestaña Git (arriba a la derecha) marcar los archivos en Staged,
+#    apretar Commit, escribir un mensaje corto y apretar Commit otra vez.
+# 8. Apretar Push. La nueva versión queda guardada en GitHub.
+
+# Para volver al curso, File, Open Project y elegir visualizacion_datos_shiny.Rproj.
+# Cada proyecto es una carpeta distinta.

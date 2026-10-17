@@ -4,13 +4,13 @@ Este repositorio reúne los materiales del curso _Visualización interactiva de 
 
 | Carpeta | Tema | Qué se construye |
 |---|---|---|
-| Clase 1 | Presentación del curso y primeros pasos | Presentación, programa y ejemplos de apps Shiny publicadas. Instalar R y RStudio, lo básico de R y la primera app con datos. |
+| Clase 1 | Presentación del curso y primeros pasos | Presentación, programa y ejemplos de apps Shiny publicadas. Instalar R y RStudio, trabajar en un proyecto, lo básico de R y la primera app con datos. GitHub como desafío opcional. |
 | Clase 2 | Bases de RStudio,Shiny | Un menú que cambia un texto y una tabla fija. |
 | Clase 3 | UI - Interfaz de Usuario | Barra lateral, filas, columnas y pestañas. |
 | Clase 4 | Inputs y outputs | Filtros, gráfico de barras, tabla y textos. |
 | Clase 5 | Reactividad | El filtro escrito una sola vez y un botón para aplicarlo. |
 | Clase 6 | Gráficos dinámicos | Gráficos con ggplot2 y uno interactivo con plotly. |
-| Clase 7 | Estética, app final y publicación | Barra de navegación, cajas de números, tarjetas y tablas interactivas. Gráficos, tablas y mapas en tres paneles, publicados en shinyapps.io. |
+| Clase 7 | Estética, app final y publicación | Barra de navegación, cajas de números, tarjetas y tablas interactivas. Gráficos, tablas y mapas en tres paneles, publicados en Posit Connect Cloud. |
 | Clase Extra (revisor_corpus) | Tus datos y lo que faltaba | Revisar el corpus propio antes de armar su app, mensajes claros y límites de Shiny. |
 | Ejercicios extra (ejercicios_extra) | Un ejercicio por clase | Apps incompletas con consignas para practicar después de cada clase, cada una con su solución. |
 
@@ -20,8 +20,10 @@ Los datos de trabajo son los resultados de la Elección Nacional 2024 de Uruguay
 
 Cada carpeta de clase contiene un archivo app.R y una presentación con la misma estética en todo el curso. Todas las apps comparten una estructura fija, con una sección de librerías, una de código estático, la interfaz, el servidor y el arranque de la app, cada una separada y comentada. Al comienzo de cada app.R hay una zona de pruebas, un bloque de variables en mayúscula (colores, tipografías, disposición de la pantalla, formato de las tablas y de los gráficos) que se puede modificar para ver cómo el código transforma la app. La zona se va ampliando a medida que avanza el curso.
 
-El recorrido tiene siete clases y una Clase Extra. La Clase 1 presenta el curso, muestra ejemplos de tableros publicados y prepara el terreno, con la instalación de R y RStudio, lo básico del lenguaje y la primera app de Shiny con datos. De la Clase 2 a la 7 se recorren los temas del programa, en este orden. La arquitectura básica de una app. El diseño de la interfaz. Las entradas y salidas. El motor reactivo. Los gráficos con ggplot2 y plotly. Por último, la estética y la navegación con bslib y la app final de tres paneles con mapas de leaflet, publicada en shinyapps.io. La Clase Extra, en la carpeta revisor_corpus, trabaja sobre los datos propios de cada participante, completa los contenidos del programa que quedaban pendientes y discute los límites y las potencialidades de Shiny.
+El recorrido tiene siete clases y una Clase Extra. La Clase 1 presenta el curso, muestra ejemplos de tableros publicados y prepara el terreno, con la instalación de R y RStudio, el trabajo dentro de un proyecto, lo básico del lenguaje y la primera app de Shiny con datos. De la Clase 2 a la 7 se recorren los temas del programa, en este orden. La arquitectura básica de una app. El diseño de la interfaz. Las entradas y salidas. El motor reactivo. Los gráficos con ggplot2 y plotly. Por último, la estética y la navegación con bslib y la app final de tres paneles con mapas de leaflet, publicada en Posit Connect Cloud. La Clase Extra, en la carpeta revisor_corpus, trabaja sobre los datos propios de cada participante, completa los contenidos del programa que quedaban pendientes y discute los límites y las potencialidades de Shiny.
 
 La carpeta ejercicios_extra tiene un ejercicio para hacer después de cada clase, del 1 al 7. Cada uno es una app incompleta, con las consignas escritas en comentarios dentro del script, y la dificultad sube de a poco hasta un nivel medio en el último. Al lado de cada ejercicio está su solución.
 
 Para usar el repositorio hace falta tener instalados R y RStudio, y los paquetes shiny, bslib, ggplot2, plotly, DT, leaflet y rsconnect. Conviene abrir siempre el archivo visualizacion_datos_shiny.Rproj, para que RStudio trabaje desde la carpeta del curso. Para correr cualquier clase alcanza con abrir su app.R y apretar el botón Run App. Las apps leen los datos desde la carpeta compartida con la ruta ../datos/, excepto la de la Clase 7, que lleva su propia copia porque es la que se publica.
+
+Llevar las apps propias en GitHub es un desafío opcional, y el curso se puede hacer completo sin él. Quien lo tome crea un repositorio propio, lo abre en RStudio como un proyecto, copia ahí la carpeta datos y las de las clases en las que trabaja, y guarda cada versión con commit y push. Los pasos están al final de clase1/primeros_pasos.R, y la Clase 7 recuerda subir la versión que se publica.
