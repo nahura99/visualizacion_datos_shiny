@@ -1,33 +1,29 @@
-# =============================================================================
-# CLASE 1 · Presentación del curso y primeros pasos
-#
-# =============================================================================
+# =====================================================================
+# CLASE 1 - Presentación del curso y primeros pasos
 
 # Una app Shiny SIEMPRE tiene tres piezas.
-#   1) ui      qué se ve (la interfaz).
-#   2) server  qué hace (la lógica).
-#   3) shinyApp(ui, server) las une y arranca la app.
+#   1) ui      - Lo que se ve (la interfaz).
+#   2) server  - Lo que hace (la lógica de la app).
+#   3) shinyApp(ui, server) código que las une y arranca la app.
+
+
+################################################################################
 
 library(shiny)
 
-################################################################################
-
 ## ZONA DE PRUEBAS
-# Cambiá el texto entre comillas, guardá y volvé a apretar Run App.
-TITULO <- "Mi primera app Shiny"
+TITULO <- "Mi primera app Shiny" # Cambiá el texto entre comillas, guardá y volvé a apretar Run App.
 
-# Fin de la ZONA DE PRUEBAS ==============================
 ################################################################################
 
-# CODIGO ESTATICO
-# Esto se ejecuta UNA sola vez, cuando arranca la app. No depende de lo que
-# haga quien la usa.
-
+# CODIGO ESTATICO. Esto se ejecuta UNA sola vez, cuando arranca la app. No depende del usuario.
 # read.csv() lee una tabla guardada como texto separado por comas y la guarda
 # en el objeto elecciones (un data frame, 19 filas, una por departamento).
+
+elecciones <- read.csv("../datos/elecciones_departamento_2024.csv", encoding = "UTF-8")
 # La ruta empieza con ".." porque Run App se para en la carpeta clase1/ y los
 # datos están un nivel más arriba, en datos/.
-elecciones <- read.csv("../datos/elecciones_departamento_2024.csv", encoding = "UTF-8")
+
 
 
 ################################################################################
@@ -37,7 +33,7 @@ elecciones <- read.csv("../datos/elecciones_departamento_2024.csv", encoding = "
 
 ui <- fluidPage(
 
-  # El título de la página, sale de la ZONA DE PRUEBAS.
+  # El título de la página.Sale de la zona de pruebas.
   titlePanel(TITULO),
 
   # Texto fijo. p() es un párrafo, igual que en una página web.
@@ -48,10 +44,10 @@ ui <- fluidPage(
   h3("Votos emitidos por departamento"),
 
   # Un OUTPUT es un espacio vacío que el server va a rellenar. Se reconoce
-  # por el id entre comillas, "tabla_elecciones".
+  # por el id entre comillas en este caso "tabla_elecciones"
   tableOutput("tabla_elecciones"),
 
-  # Otro OUTPUT, esta vez para un texto calculado.
+  # Otro output, esta vez para un texto calculado.
   textOutput("resumen")
 )
 

@@ -1,6 +1,5 @@
 # =============================================================================
 # EJERCICIO EXTRA 1 - La primera app con otros datos
-
 # Una app con la población por departamento (censo). Hay que cambiarle el
 # título, sumarle una columna a la tabla y hacer aparecer un texto.
 

@@ -1,5 +1,5 @@
 # =============================================================================
-# EJERCICIO EXTRA 2
+# EJERCICIO EXTRA 2 - Un menú para el censo
 # Un menú elige un departamento y una ficha cuenta cuánta gente vive ahí. El
 # menú está incompleto y la ficha es  poco informativa
 
