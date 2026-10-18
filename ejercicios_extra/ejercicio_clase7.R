@@ -1,27 +1,22 @@
 # =============================================================================
-# EJERCICIO EXTRA 7 · Un tablero por departamento
+# EJERCICIO EXTRA 7. Un tablero por departamento
 # Una app con barra de navegación que muestra un departamento por vez. Falta
 # una caja de números, falta el mapa de locales y hay que darle tema propio.
-# =============================================================================
 
 ################################################################################
-## PASO 0 · LA RUTA A LOS DATOS
+#RUTA A LOS DATOS
 # La app lee las tablas de la carpeta datos/. Antes de empezar, revisá que la
 # ruta de abajo lleve a esa carpeta.
 #
-# Run App trabaja desde la carpeta donde está guardado ESTE archivo.
 #   - Si está en ejercicios_extra/, dentro de la carpeta del curso, datos/
 #     queda un nivel más arriba. Por eso la ruta empieza con "../"
 #   - Si lo guardaste en otro lado, poné la ruta a tu carpeta datos, con
 #     barras / y una barra al final. Por ejemplo
 #     "C:/Users/tu_usuario/Documents/curso_shiny/datos/"
-#   - Para PUBLICAR la app, copiá la carpeta datos/ adentro de la carpeta
-#     de la app y cambiá la ruta por "datos/"
-# Si la ruta está mal, al apretar Run App aparece un error que dice
-# "cannot open file" o "No such file or directory".
+# Si la ruta está mal, al apretar Run App aparece un error
 RUTA_DATOS <- "../datos/"
 
-# Para después de la Clase 7. Es el más largo, tomalo con calma.
+# Es el más largo, tomalo con calma.
 # Fijate que acá el menú elige UN solo departamento (no varios), y que la
 # app mezcla tres tablas, elecciones, locales y censo.
 
@@ -38,7 +33,7 @@ COLOR_PRINCIPAL <- "#5A189A"
 COLOR_FONDO     <- "#FFFFFF"
 COLOR_TEXTO     <- "#2E0A4E"
 
-# CONSIGNA 4
+# CONSIGNA 0
 # Sumá un color para la barra de navegación y usalo en el tema (más abajo).
 # Elegí también otra tipografía de Google Fonts para los títulos.
 
@@ -78,6 +73,7 @@ barra <- sidebar(
 # (sale de la tabla censo). Ponele un ícono, por ejemplo icon("people-group").
 # Ojo que el output todavía no existe, también lo tenés que escribir en el
 # server.
+
 numeros <- layout_columns(
   value_box("Habilitados", textOutput("habilitados"),
             showcase = icon("users"), theme = "primary"),
@@ -128,14 +124,14 @@ server <- function(input, output, session) {
 
   # CONSIGNA 3
   # La tabla muestra 10 filas por página y los textos en inglés. Hacé que
-  # muestre 5 filas y que esté en español (la clase tiene cómo).
-  # Y ya que estás, sacale la columna de números de fila.
+  # muestre 5 filas y que esté en español
+  # Sacale tambien la columna de números de fila.
   output$t_locales <- renderDT({
     l <- depto_locales()[, c("Localidad", "NombreLocal", "TotalHabilitados", "LemaGanador")]
     datatable(l)
   })
 
-  # CONSIGNA 2 (sigue)
+  # CONSIGNA 2 
   # Escribí output$mapa con renderLeaflet(). Un punto por local, en
   # Longitud y Latitud, con el color del lema que ganó en ese local
   # (columna LemaGanador). Para los colores usá colorFactor() con

@@ -1,11 +1,9 @@
 # =============================================================================
 # SOLUCIÓN · EJERCICIO EXTRA 7 · Un tablero por departamento
-# =============================================================================
 
-## PASO 0 · Ruta a los datos
-# "../datos/" si este archivo está en ejercicios_extra/ del curso. Si no, la
-# ruta a tu carpeta datos, con barras / y una barra al final.
 RUTA_DATOS <- "../datos/"
+
+################################################################################
 
 library(shiny)
 library(bslib)
@@ -13,6 +11,8 @@ library(DT)
 library(leaflet)
 
 TITULO <- "Mi departamento en 2024"
+
+################################################################################
 
 # Consigna 4, color de la barra y fuente de los títulos en el tema
 tema <- bs_theme(version = 5, bg = "#FFFFFF", fg = "#2E0A4E", primary = "#5A189A",
@@ -27,6 +27,8 @@ locales    <- locales[!is.na(locales$Latitud), ]
 COLORES_LEMAS <- c("Frente Amplio"    = "#1F4FA3",
                    "Partido Nacional" = "#7FB3E8",
                    "Partido Colorado" = "#D94F3D")
+
+################################################################################
 
 barra <- sidebar(title = "Filtro",
   selectInput("depto", "Departamento:", choices = sort(elecciones$departamento), selected = "Florida"),
@@ -46,6 +48,8 @@ ui <- page_navbar(
   nav_panel("Mapa", card(card_header("Lema ganador en cada local"),                                  # Consigna 2
                          leafletOutput("mapa", height = "500px")))
 )
+
+################################################################################
 
 server <- function(input, output, session) {
   depto_elec <- reactive({
@@ -87,5 +91,7 @@ server <- function(input, output, session) {
       addLegend(pal = colores, values = names(COLORES_LEMAS), title = "Lema ganador")
   })
 }
+
+################################################################################
 
 shinyApp(ui, server)

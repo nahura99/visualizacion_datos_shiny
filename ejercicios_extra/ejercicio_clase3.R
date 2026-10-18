@@ -1,27 +1,23 @@
 # =============================================================================
-# EJERCICIO EXTRA 3 · Ordenar la pantalla
-# Un tablero con barra lateral, números arriba y pestañas. Falta un número,
+# EJERCICIO EXTRA 3
+# Ordenar la pantalla. La idea es hacer un tablero con barra lateral, números arriba y pestañas. Falta un número,
 # falta una pestaña y la barra necesita un poco de texto.
 # =============================================================================
 
 ################################################################################
-## PASO 0 · LA RUTA A LOS DATOS
+#RUTA A LOS DATOS
 # La app lee las tablas de la carpeta datos/. Antes de empezar, revisá que la
 # ruta de abajo lleve a esa carpeta.
 #
-# Run App trabaja desde la carpeta donde está guardado ESTE archivo.
 #   - Si está en ejercicios_extra/, dentro de la carpeta del curso, datos/
 #     queda un nivel más arriba. Por eso la ruta empieza con "../"
 #   - Si lo guardaste en otro lado, poné la ruta a tu carpeta datos, con
 #     barras / y una barra al final. Por ejemplo
 #     "C:/Users/tu_usuario/Documents/curso_shiny/datos/"
-# Si la ruta está mal, al apretar Run App aparece un error que dice
-# "cannot open file" o "No such file or directory".
+# Si la ruta está mal, al apretar Run App aparece un error
 RUTA_DATOS <- "../datos/"
 
-# Para después de la Clase 3.
-# La app ya filtra por región. Lo que hay que trabajar es la interfaz (UI),
-# el server casi no se toca.
+# La app ya filtra por region. Lo que hay que trabajar es la interfaz (UI) el server casi no se toca
 
 library(shiny)
 library(bslib)
@@ -34,7 +30,7 @@ COLOR_PRINCIPAL <- "#5A189A"
 COLOR_FONDO     <- "#FFFFFF"
 COLOR_TEXTO     <- "#2E0A4E"
 
-# "pills" o "tabs"
+# podes probar "pills" o "tabs"
 ESTILO_PESTANAS <- "pills"
 
 ################################################################################
@@ -57,26 +53,25 @@ barra <- sidebarPanel(
 
   # CONSIGNA 3
   # Debajo del menú agregá
-  #   - una línea divisoria
-  #   - un subtítulo chico que diga "Fuente"
-  #   - un párrafo con un link a la Corte Electoral, https://www.corteelectoral.gub.uy
-  # Para el link se usa a(), con href = "la dirección". Fijate que sea clickeable.
+  #   una línea divisoria
+  #   un subtítulo chico que diga "Fuente"
+  #   un párrafo con un link a la Corte electoral, https://www.corteelectoral.gub.uy
+  # Para el link usa a(), con href = "la dirección"
 )
 
 # CONSIGNA 1
 # Arriba van dos números en dos columnas de 6. En el server ya está calculado
 # un tercero, output$votos_fa (votos al Frente Amplio), pero no se ve.
-# Agregalo como una tercera columna y acomodá los anchos para que las tres
-# entren en la misma fila (la pantalla tiene 12).
+# Agregalo como una tercera columna y acomodá los anchos para que entren bien
 numeros <- fluidRow(
   column(6, h5("Departamentos"), h2(textOutput("n_deptos"), class = "text-primary")),
   column(6, h5("Emitidos"),      h2(textOutput("emitidos"), class = "text-primary"))
 )
 
 # CONSIGNA 2
-# Hay una sola pestaña. Sumá una segunda pestaña, "Ayuda", que explique en
-# dos o tres renglones qué es cada columna de la tabla. Usá p() y strong()
-# para que el nombre de la columna quede en negrita.
+# Hay una sola pestaña. Suma una segunda pestaña que se llame "Ayuda", que explique en
+# dos o tres renglones que es cada columna de la tabla. Podes usar p() y strong()
+# para que el nombre de la columna quede en negrita
 pestanas <- tabsetPanel(
   type = ESTILO_PESTANAS,
   tabPanel("Tabla", br(), tableOutput("tabla"))
@@ -122,5 +117,4 @@ server <- function(input, output, session) {
 ################################################################################
 shinyApp(ui = ui, server = server)
 
-# Si querés seguir, pasá la barra a la derecha. Hay un argumento de
-# sidebarLayout() que lo hace (lo vimos en clase).
+

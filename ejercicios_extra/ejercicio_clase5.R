@@ -1,25 +1,22 @@
 # =============================================================================
-# EJERCICIO EXTRA 5 · Calcular una sola vez
+# EJERCICIO EXTRA 5
+# IDEA: Calcular una sola vez
 # La app funciona pero repite el mismo filtro en cada output y se rompe si
 # no hay región elegida. Hay que ordenarla con reactive(), req() y un botón.
-# =============================================================================
 
 ################################################################################
-## PASO 0 · LA RUTA A LOS DATOS
+#RUTA A LOS DATOS
 # La app lee las tablas de la carpeta datos/. Antes de empezar, revisá que la
 # ruta de abajo lleve a esa carpeta.
 #
-# Run App trabaja desde la carpeta donde está guardado ESTE archivo.
 #   - Si está en ejercicios_extra/, dentro de la carpeta del curso, datos/
 #     queda un nivel más arriba. Por eso la ruta empieza con "../"
 #   - Si lo guardaste en otro lado, poné la ruta a tu carpeta datos, con
 #     barras / y una barra al final. Por ejemplo
 #     "C:/Users/tu_usuario/Documents/curso_shiny/datos/"
-# Si la ruta está mal, al apretar Run App aparece un error que dice
-# "cannot open file" o "No such file or directory".
+# Si la ruta está mal, al apretar Run App aparece un error
 RUTA_DATOS <- "../datos/"
 
-# Para después de la Clase 5.
 # Antes de tocar nada, corré la app y borrá todas las regiones del menú.
 # Mirá qué pasa con el gráfico.
 
@@ -80,8 +77,8 @@ server <- function(input, output, session) {
   # El filtro (las dos líneas que arman d) está escrito tres veces, una en
   # cada output. Escribilo UNA sola vez con reactive(), guardalo en un objeto
   # que se llame datos, y hacé que los tres outputs lo usen.
-  # OJO, a un reactive se lo llama con paréntesis, datos(). Si te olvidás de
-  # los paréntesis, Shiny da un error bastante raro.
+  # OJO a un reactive se lo llama con paréntesis, datos(). No te olvides de
+  # los paréntesis.
 
   # CONSIGNA 2
   # Cuando no hay ninguna región elegida, el gráfico muestra un error en rojo.

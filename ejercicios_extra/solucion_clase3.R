@@ -10,11 +10,17 @@ RUTA_DATOS <- "../datos/"
 library(shiny)
 library(bslib)
 
+################################################################################
+
 TITULO <- "Elección Nacional 2024"
 tema   <- bs_theme(version = 5, bg = "#FFFFFF", fg = "#2E0A4E", primary = "#5A189A")
 
+################################################################################
+
 elecciones <- read.csv(paste0(RUTA_DATOS, "elecciones_departamento_2024.csv"), encoding = "UTF-8")
 regiones   <- sort(unique(elecciones$region))
+
+################################################################################
 
 barra <- sidebarPanel(
   selectInput("region", "Región:", choices = regiones, selected = regiones, multiple = TRUE),
@@ -45,6 +51,8 @@ ui <- fluidPage(
                 barra, mainPanel(numeros, hr(), pestanas))
 )
 
+################################################################################
+
 server <- function(input, output, session) {
   output$n_deptos <- renderText({
     d <- elecciones[elecciones$region %in% input$region, ]
@@ -63,5 +71,7 @@ server <- function(input, output, session) {
     d[order(-d$emitidos), c("departamento", "region", "emitidos", "pct_frente_amplio")]
   })
 }
+
+################################################################################
 
 shinyApp(ui, server)

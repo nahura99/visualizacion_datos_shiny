@@ -81,6 +81,14 @@ paste0("En ", pais, " votaron ", emitidos, " personas.")
 # Se instala UNA sola vez por computadora. Sacale el # y corré la línea.
 # install.packages(c("shiny", "bslib", "ggplot2", "plotly", "DT", "leaflet", "rsconnect"))
 
+# Si ya tenías R instalado de antes, actualizá TODOS los paquetes. Un paquete
+# viejo puede no llevarse bien con uno nuevo (por ejemplo, un plotly viejo con
+# un ggplot2 nuevo da error en los gráficos interactivos). Sacale el # y corré
+# la línea. Si pregunta si querés instalar "from sources", respondé n (no).
+# update.packages(ask = FALSE)
+
+# Después de instalar o actualizar, reiniciá R: menú Session, Restart R.
+
 # Se activa con library() cada vez que abrís R.
 library(shiny)
 

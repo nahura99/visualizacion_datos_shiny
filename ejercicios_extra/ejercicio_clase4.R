@@ -1,28 +1,24 @@
 # =============================================================================
-# EJERCICIO EXTRA 4 · Más controles
-# Un gráfico del voto al Frente Amplio que se filtra por región. Hay que
+# EJERCICIO EXTRA 4 
+#Mas controles, sumar grafico del voto al Frente Amplio que se filtra por region. Hay que
 # sumar tres controles nuevos y conectarlos con el gráfico y la tabla.
 # =============================================================================
 
 ################################################################################
-## PASO 0 · LA RUTA A LOS DATOS
+#RUTA A LOS DATOS
 # La app lee las tablas de la carpeta datos/. Antes de empezar, revisá que la
 # ruta de abajo lleve a esa carpeta.
 #
-# Run App trabaja desde la carpeta donde está guardado ESTE archivo.
 #   - Si está en ejercicios_extra/, dentro de la carpeta del curso, datos/
 #     queda un nivel más arriba. Por eso la ruta empieza con "../"
 #   - Si lo guardaste en otro lado, poné la ruta a tu carpeta datos, con
 #     barras / y una barra al final. Por ejemplo
 #     "C:/Users/tu_usuario/Documents/curso_shiny/datos/"
-# Si la ruta está mal, al apretar Run App aparece un error que dice
-# "cannot open file" o "No such file or directory".
+# Si la ruta está mal, al apretar Run App aparece un error
 RUTA_DATOS <- "../datos/"
 
-# Para después de la Clase 4.
-# Cada control nuevo tiene dos partes, el input en la barra (UI) y el lugar
-# del server donde se usa con input$id. Si te falta una de las dos, el control
-# aparece pero no hace nada.
+# RECORDAR! Cada control nuevo tiene dos partes, el input en la barra (UI) y el lugar
+# del server donde se usa con input$id. 
 
 library(shiny)
 library(bslib)
@@ -60,8 +56,7 @@ barra <- sidebarPanel(
   # CONSIGNA 2
   # Agregá un sliderInput() con el margen mínimo de victoria, de 0 a 35 puntos.
   # El margen está en la columna margen_pct (diferencia entre el primero y el
-  # segundo). La idea es poder quedarse solo con los departamentos donde se
-  # ganó por mucho.
+  # segundo).
 
   # CONSIGNA 3
   # Agregá un selectInput() para elegir el partido que muestra el gráfico.
@@ -81,9 +76,7 @@ ui <- fluidPage(
       tabsetPanel(
         tabPanel("Gráfico", br(), plotOutput("grafico", height = "500px")),
         tabPanel("Tabla",   br(), tableOutput("tabla"))
-      )
-    )
-  )
+      )))
 )
 
 
@@ -119,6 +112,3 @@ server <- function(input, output, session) {
 
 ################################################################################
 shinyApp(ui = ui, server = server)
-
-# Opcional. Sumá una tercera pestaña con verbatimTextOutput() que muestre qué
-# devuelve cada input, como en la clase.

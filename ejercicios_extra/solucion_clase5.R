@@ -10,12 +10,16 @@ RUTA_DATOS <- "../datos/"
 library(shiny)
 library(bslib)
 
+###############################################################################
+
 TITULO <- "Participación electoral 2024"
 COLOR_PRINCIPAL <- "#5A189A"
 tema <- bs_theme(version = 5, bg = "#FFFFFF", fg = "#2E0A4E", primary = COLOR_PRINCIPAL)
 
 elecciones <- read.csv(paste0(RUTA_DATOS, "elecciones_departamento_2024.csv"), encoding = "UTF-8")
 regiones   <- sort(unique(elecciones$region))
+
+###############################################################################
 
 barra <- sidebarPanel(
   selectInput("region", "Región:", choices = regiones, selected = regiones, multiple = TRUE),
@@ -28,6 +32,8 @@ ui <- fluidPage(theme = tema, titlePanel(TITULO), sidebarLayout(barra, mainPanel
   plotOutput("grafico", height = "450px"),
   tableOutput("tabla")
 )))
+
+###############################################################################
 
 server <- function(input, output, session) {
   # Consignas 1 a 3. El filtro una sola vez; req() espera si no hay datos;
@@ -56,5 +62,7 @@ server <- function(input, output, session) {
       c("departamento", "region", "participacion_pct", "en_blanco_pct", "anulados_pct")]
   })
 }
+
+###############################################################################
 
 shinyApp(ui, server)

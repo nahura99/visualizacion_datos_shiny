@@ -38,6 +38,8 @@ cuerpo <- switch(LAYOUT,
 ui <- fluidPage(theme = tema, titlePanel(TITULO),
                 p("Datos de los Censos 2011 y 2023 (INE)."), cuerpo)
 
+################################################################################
+
 server <- function(input, output, session) {
   # Consigna 2, un pedazo más en el paste0()
   output$ficha <- renderText({
@@ -53,5 +55,7 @@ server <- function(input, output, session) {
           c("departamento", "region", "poblacion_2023", "variacion_pct", "densidad_2023")]
   })
 }
+
+################################################################################
 
 shinyApp(ui, server)

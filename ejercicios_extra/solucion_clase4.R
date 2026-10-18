@@ -10,15 +10,21 @@ RUTA_DATOS <- "../datos/"
 library(shiny)
 library(bslib)
 
+################################################################################
+
 TITULO <- "Voto por departamento"
 COLOR_PRINCIPAL <- "#5A189A"
 tema <- bs_theme(version = 5, bg = "#FFFFFF", fg = "#2E0A4E", primary = COLOR_PRINCIPAL)
+
+################################################################################
 
 elecciones <- read.csv(paste0(RUTA_DATOS, "elecciones_departamento_2024.csv"), encoding = "UTF-8")
 regiones   <- sort(unique(elecciones$region))
 partidos   <- c("Frente Amplio"    = "pct_frente_amplio",
                 "Partido Nacional" = "pct_partido_nacional",
                 "Partido Colorado" = "pct_partido_colorado")
+
+################################################################################
 
 barra <- sidebarPanel(
   selectInput("region", "Región:", choices = regiones, selected = regiones, multiple = TRUE),
@@ -34,6 +40,8 @@ ui <- fluidPage(theme = tema, titlePanel(TITULO), sidebarLayout(barra, mainPanel
     tabPanel("Inputs",  br(), verbatimTextOutput("consola"))   # Opcional
   )
 )))
+
+################################################################################
 
 server <- function(input, output, session) {
   # Consigna 2, la condición del margen se suma con & en los dos filtros
@@ -54,5 +62,7 @@ server <- function(input, output, session) {
          margen = input$margen, partido = input$partido)
   })
 }
+
+################################################################################
 
 shinyApp(ui, server)

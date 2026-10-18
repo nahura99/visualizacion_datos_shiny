@@ -1,10 +1,8 @@
 # =============================================================================
 # SOLUCIÓN · EJERCICIO EXTRA 6 · Gráficos por capas
-# =============================================================================
 
-## PASO 0 · Ruta a los datos
-# "../datos/" si este archivo está en ejercicios_extra/ del curso. Si no, la
-# ruta a tu carpeta datos, con barras / y una barra al final.
+
+###############################################################################
 RUTA_DATOS <- "../datos/"
 
 library(shiny)
@@ -12,12 +10,16 @@ library(bslib)
 library(ggplot2)
 library(plotly)
 
+###############################################################################
+
 TITULO <- "Plebiscitos 2024"
 COLOR_PRINCIPAL <- "#5A189A"
 tema <- bs_theme(version = 5, bg = "#FFFFFF", fg = "#2E0A4E", primary = COLOR_PRINCIPAL)
 
 elecciones <- read.csv(paste0(RUTA_DATOS, "elecciones_departamento_2024.csv"), encoding = "UTF-8")
 regiones   <- sort(unique(elecciones$region))
+
+###############################################################################
 
 barra <- sidebarPanel(
   selectInput("region", "Región:", choices = regiones, selected = regiones, multiple = TRUE),
@@ -30,6 +32,8 @@ ui <- fluidPage(theme = tema, titlePanel(TITULO), sidebarLayout(barra, mainPanel
     tabPanel("Los dos plebiscitos", br(), plotlyOutput("puntos", height = "500px"))   # Consigna 2
   )
 )))
+
+###############################################################################
 
 server <- function(input, output, session) {
   datos <- reactive({
@@ -64,5 +68,7 @@ server <- function(input, output, session) {
     ggplotly(g, tooltip = "text")
   })
 }
+
+###############################################################################
 
 shinyApp(ui, server)
