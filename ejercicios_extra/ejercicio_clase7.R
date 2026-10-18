@@ -4,11 +4,26 @@
 # una caja de números, falta el mapa de locales y hay que darle tema propio.
 # =============================================================================
 
+################################################################################
+## PASO 0 · LA RUTA A LOS DATOS
+# La app lee las tablas de la carpeta datos/. Antes de empezar, revisá que la
+# ruta de abajo lleve a esa carpeta.
+#
+# Run App trabaja desde la carpeta donde está guardado ESTE archivo.
+#   - Si está en ejercicios_extra/, dentro de la carpeta del curso, datos/
+#     queda un nivel más arriba. Por eso la ruta empieza con "../"
+#   - Si lo guardaste en otro lado, poné la ruta a tu carpeta datos, con
+#     barras / y una barra al final. Por ejemplo
+#     "C:/Users/tu_usuario/Documents/curso_shiny/datos/"
+#   - Para PUBLICAR la app, copiá la carpeta datos/ adentro de la carpeta
+#     de la app y cambiá la ruta por "datos/"
+# Si la ruta está mal, al apretar Run App aparece un error que dice
+# "cannot open file" o "No such file or directory".
+RUTA_DATOS <- "../datos/"
+
 # Para después de la Clase 7. Es el más largo, tomalo con calma.
 # Fijate que acá el menú elige UN solo departamento (no varios), y que la
 # app mezcla tres tablas, elecciones, locales y censo.
-# Los datos se leen de ../datos/ como en las clases 2 a 6. Si después la
-# querés publicar, acordate de lo que vimos con la carpeta datos/ propia.
 
 library(shiny)
 library(bslib)
@@ -33,9 +48,10 @@ tema <- bs_theme(version = 5, bg = COLOR_FONDO, fg = COLOR_TEXTO,
                  primary = COLOR_PRINCIPAL)
 
 # CODIGO ESTATICO
-elecciones <- read.csv("../datos/elecciones_departamento_2024.csv", encoding = "UTF-8")
-locales    <- read.csv("../datos/elecciones_locales_2024.csv",      encoding = "UTF-8")
-censo      <- read.csv("../datos/censo_departamentos.csv",          encoding = "UTF-8")
+# paste0() pega la ruta del PASO 0 con el nombre del archivo.
+elecciones <- read.csv(paste0(RUTA_DATOS, "elecciones_departamento_2024.csv"), encoding = "UTF-8")
+locales    <- read.csv(paste0(RUTA_DATOS, "elecciones_locales_2024.csv"),      encoding = "UTF-8")
+censo      <- read.csv(paste0(RUTA_DATOS, "censo_departamentos.csv"),          encoding = "UTF-8")
 
 # Solo locales con coordenadas
 locales <- locales[!is.na(locales$Latitud), ]

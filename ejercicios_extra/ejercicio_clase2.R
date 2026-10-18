@@ -1,12 +1,24 @@
 # =============================================================================
-# EJERCICIO EXTRA 2 · Un menú para el censo
+# EJERCICIO EXTRA 2
 # Un menú elige un departamento y una ficha cuenta cuánta gente vive ahí. El
-# menú está incompleto y la ficha dice poco.
-# =============================================================================
+# menú está incompleto y la ficha es  poco informativa
 
-# Para después de la Clase 2.
+################################################################################
+#RUTA A LOS DATOS
+# La app lee las tablas de la carpeta datos/. Antes de empezar, revisá que la
+# ruta de abajo lleve a esa carpeta.
+#
+#   - Si está en ejercicios_extra/, dentro de la carpeta del curso, datos/
+#     queda un nivel más arriba. Por eso la ruta empieza con "../"
+#   - Si lo guardaste en otro lado, poné la ruta a tu carpeta datos, con
+#     barras / y una barra al final. Por ejemplo
+#     "C:/Users/tu_usuario/Documents/curso_shiny/datos/"
+# Si la ruta está mal, al apretar Run App aparece un error
+RUTA_DATOS <- "../datos/"
+
+
 # Corré la app tal como está. Funciona, pero el menú tiene un solo
-# departamento y la ficha está a medio escribir.
+# departamento y la ficha está  muy corta.
 
 library(shiny)
 library(bslib)
@@ -30,7 +42,8 @@ tema <- bs_theme(version = 5, bg = COLOR_FONDO, fg = COLOR_TEXTO,
                  primary = COLOR_PRINCIPAL)
 
 # CODIGO ESTATICO
-censo <- read.csv("../datos/censo_departamentos.csv", encoding = "UTF-8")
+# paste0() pega la ruta del PASO 0 con el nombre del archivo.
+censo <- read.csv(paste0(RUTA_DATOS, "censo_departamentos.csv"), encoding = "UTF-8")
 
 # CONSIGNA 1
 # Este vector es el que usa el menú, y ahora tiene un solo departamento.
@@ -79,9 +92,7 @@ server <- function(input, output, session) {
 
   # CONSIGNA 2
   # La ficha solo dice la población de 2023. Completala para que también diga
-  # cuánto cambió la población desde 2011 (columna variacion_pct).
-  # Algo así, "En Maldonado viven 212.951 personas. Desde 2011 la población
-  # cambió un 29.6%."
+  # algo más. Por ej cuánto cambió la población desde 2011 (columna variacion_pct).
   output$ficha <- renderText({
     fila <- censo[censo$departamento == input$depto, ]
     paste0(
@@ -90,7 +101,7 @@ server <- function(input, output, session) {
     )
   })
 
-  # Esta tabla no depende del menú, queda siempre igual
+  # Esta tabla no depende del menu. queda siempre igual
   output$tabla <- renderTable({
     censo[order(-censo$poblacion_2023),
           c("departamento", "region", "poblacion_2023", "variacion_pct")]
@@ -101,5 +112,3 @@ server <- function(input, output, session) {
 ################################################################################
 shinyApp(ui = ui, server = server)
 
-# Extra (opcional). Ordená la tabla por densidad (densidad_2023) en lugar de
-# por población. Qué departamento queda primero?

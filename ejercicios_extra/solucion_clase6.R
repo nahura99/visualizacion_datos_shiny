@@ -2,72 +2,42 @@
 # SOLUCIÓN · EJERCICIO EXTRA 6 · Gráficos por capas
 # =============================================================================
 
+## PASO 0 · Ruta a los datos
+# "../datos/" si este archivo está en ejercicios_extra/ del curso. Si no, la
+# ruta a tu carpeta datos, con barras / y una barra al final.
+RUTA_DATOS <- "../datos/"
+
 library(shiny)
 library(bslib)
 library(ggplot2)
 library(plotly)
 
-################################################################################
-## ZONA DE PRUEBAS
 TITULO <- "Plebiscitos 2024"
-
 COLOR_PRINCIPAL <- "#5A189A"
-COLOR_FONDO     <- "#FFFFFF"
-COLOR_TEXTO     <- "#2E0A4E"
+tema <- bs_theme(version = 5, bg = "#FFFFFF", fg = "#2E0A4E", primary = COLOR_PRINCIPAL)
 
-PALETA_REGIONES <- "Dark2"
-
-################################################################################
-
-tema <- bs_theme(version = 5, bg = COLOR_FONDO, fg = COLOR_TEXTO,
-                 primary = COLOR_PRINCIPAL)
-
-# CODIGO ESTATICO
-elecciones <- read.csv("../datos/elecciones_departamento_2024.csv", encoding = "UTF-8")
+elecciones <- read.csv(paste0(RUTA_DATOS, "elecciones_departamento_2024.csv"), encoding = "UTF-8")
 regiones   <- sort(unique(elecciones$region))
 
-
-################################################################################
-# INTERFAZ (UI)
-
 barra <- sidebarPanel(
-  selectInput("region", "Región:",
-              choices = regiones, selected = regiones, multiple = TRUE),
-
-  # CONSIGNA 3
-  selectInput("tema", "Aspecto de los gráficos:",
-              choices = c("minimal", "classic", "bw"))
+  selectInput("region", "Región:", choices = regiones, selected = regiones, multiple = TRUE),
+  selectInput("tema", "Aspecto de los gráficos:", choices = c("minimal", "classic", "bw"))   # Consigna 3
 )
 
-ui <- fluidPage(
-  theme = tema,
-  titlePanel(TITULO),
-  sidebarLayout(
-    barra,
-    mainPanel(
-      tabsetPanel(
-        tabPanel("Art. 11", br(), plotOutput("barras", height = "500px")),
-
-        # CONSIGNA 2
-        tabPanel("Los dos plebiscitos", br(),
-                 plotlyOutput("puntos", height = "500px"))
-      )
-    )
+ui <- fluidPage(theme = tema, titlePanel(TITULO), sidebarLayout(barra, mainPanel(
+  tabsetPanel(
+    tabPanel("Art. 11", br(), plotOutput("barras", height = "500px")),
+    tabPanel("Los dos plebiscitos", br(), plotlyOutput("puntos", height = "500px"))   # Consigna 2
   )
-)
-
-
-################################################################################
-# SERVIDOR (SERVER)
+)))
 
 server <- function(input, output, session) {
-
   datos <- reactive({
     req(input$region)
     elecciones[elecciones$region %in% input$region, ]
   })
 
-  # CONSIGNA 3. Del texto del menú a la función del tema.
+  # Consigna 3, del texto del menú a la función del tema
   tema_grafico <- reactive({
     switch(input$tema,
            minimal = theme_minimal(base_size = 14),
@@ -75,8 +45,7 @@ server <- function(input, output, session) {
            bw      = theme_bw(base_size = 14))
   })
 
-  # CONSIGNA 1. geom_col() dibuja las barras, reorder() las ordena y labs()
-  # pone los títulos. Y el tema sale del reactive de arriba.
+  # Consigna 1, geom_col() dibuja las barras y reorder() las ordena
   output$barras <- renderPlot({
     ggplot(datos(), aes(x = pct_si_art11, y = reorder(departamento, pct_si_art11))) +
       geom_col(fill = COLOR_PRINCIPAL) +
@@ -84,19 +53,16 @@ server <- function(input, output, session) {
       tema_grafico()
   })
 
-  # CONSIGNA 2. text = departamento y tooltip = "text" para que el mouse
-  # muestre solo el nombre.
+  # Consigna 2, text = departamento es lo que muestra el mouse
   output$puntos <- renderPlotly({
     g <- ggplot(datos(), aes(x = pct_si_art11, y = pct_si_art67,
                              colour = region, text = departamento)) +
       geom_point(size = 3) +
-      scale_colour_brewer(palette = PALETA_REGIONES) +
+      scale_colour_brewer(palette = "Dark2") +
       labs(x = "SÍ al Art. 11 (%)", y = "SÍ al Art. 67 (%)", colour = "Región") +
       tema_grafico()
     ggplotly(g, tooltip = "text")
   })
 }
 
-
-################################################################################
-shinyApp(ui = ui, server = server)
+shinyApp(ui, server)

@@ -1,16 +1,30 @@
 # =============================================================================
-# EJERCICIO EXTRA 1 · La primera app con otros datos
+# EJERCICIO EXTRA 1 - La primera app con otros datos
+
 # Una app con la población por departamento (censo). Hay que cambiarle el
 # título, sumarle una columna a la tabla y hacer aparecer un texto.
-# =============================================================================
 
-# Para hacer después de la Clase 1.
-# Es la misma idea que la app de la clase, pero con otra tabla, la del censo.
-# Abrí el archivo, apretá Run App y mirá qué aparece. Después andá resolviendo
-# las consignas en orden (están marcadas con CONSIGNA). Guardá y volvé a correr
-# la app después de cada cambio.
+
+################################################################################
+#RUTA A LOS DATOS
+# La app lee las tablas de la carpeta datos/. Antes de empezar, revisá que la
+# ruta de abajo lleve a esa carpeta.
+#
+#   - Si está en ejercicios_extra/, dentro de la carpeta del curso, datos/
+#     queda un nivel más arriba. Por eso la ruta empieza con "../"
+#   - Si lo guardaste en otro lado, poné la ruta a tu carpeta datos, con
+#     barras / y una barra al final. Por ejemplo
+#     "C:/Users/tu_usuario/Documents/curso_shiny/datos/"
+# Si la ruta está mal, al apretar Run App aparece un error
+
+RUTA_DATOS <- "../datos/"
+
+# apretá Run App y mirá qué aparece. Después andá resolviendo las consignas en 
+#orden (están marcadas con CONSIGNA). Guardá y volvé a correr la app después de cada cambio.
 
 library(shiny)
+
+
 
 ################################################################################
 ## ZONA DE PRUEBAS
@@ -22,28 +36,24 @@ TITULO <- "Mi app"
 ################################################################################
 
 # CODIGO ESTATICO
-# Igual que en la clase, la ruta empieza con ".." porque los datos están en
-# la carpeta datos/, un nivel más arriba.
-censo <- read.csv("../datos/censo_departamentos.csv", encoding = "UTF-8")
+# paste0() pega la ruta del PASO 0 con el nombre del archivo.
+censo <- read.csv(paste0(RUTA_DATOS, "censo_departamentos.csv"), encoding = "UTF-8")
 
 
 ################################################################################
 # INTERFAZ (UI)
 
 ui <- fluidPage(
-
   titlePanel(TITULO),
-
   p("Población de cada departamento según el Censo 2023 (INE)."),
-
   h3("Población por departamento"),
   tableOutput("tabla_censo")
 
   # CONSIGNA 3
   # En el server ya está escrito output$total, pero cuando corrés la app no
   # aparece en ningún lado. Por qué?
-  # Agregá acá lo que falta para que se vea, abajo de la tabla.
-  # (ojo con la coma, cada cosa dentro de fluidPage() va separada por comas)
+  # Agregá acá lo que falta para que se vea abajo de la tabla.
+  # (ojo con las comas)
 
 )
 
@@ -68,10 +78,7 @@ server <- function(input, output, session) {
   })
 }
 
-
 ################################################################################
 # ARRANCAR LA APP
 shinyApp(ui = ui, server = server)
 
-# Si te sobra tiempo... probá agregar otro p() con la fuente de los datos
-# en un lugar distinto de la página.

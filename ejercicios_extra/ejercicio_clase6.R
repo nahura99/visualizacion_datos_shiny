@@ -4,6 +4,21 @@
 # completarlo, sumar un gráfico interactivo y dejar elegir el tema.
 # =============================================================================
 
+################################################################################
+## PASO 0 · LA RUTA A LOS DATOS
+# La app lee las tablas de la carpeta datos/. Antes de empezar, revisá que la
+# ruta de abajo lleve a esa carpeta.
+#
+# Run App trabaja desde la carpeta donde está guardado ESTE archivo.
+#   - Si está en ejercicios_extra/, dentro de la carpeta del curso, datos/
+#     queda un nivel más arriba. Por eso la ruta empieza con "../"
+#   - Si lo guardaste en otro lado, poné la ruta a tu carpeta datos, con
+#     barras / y una barra al final. Por ejemplo
+#     "C:/Users/tu_usuario/Documents/curso_shiny/datos/"
+# Si la ruta está mal, al apretar Run App aparece un error que dice
+# "cannot open file" o "No such file or directory".
+RUTA_DATOS <- "../datos/"
+
 # Para después de la Clase 6.
 # Los datos filtrados ya están en datos(), así que acá se trabaja solo
 # con los gráficos.
@@ -29,7 +44,8 @@ tema <- bs_theme(version = 5, bg = COLOR_FONDO, fg = COLOR_TEXTO,
                  primary = COLOR_PRINCIPAL)
 
 # CODIGO ESTATICO
-elecciones <- read.csv("../datos/elecciones_departamento_2024.csv", encoding = "UTF-8")
+# paste0() pega la ruta del PASO 0 con el nombre del archivo.
+elecciones <- read.csv(paste0(RUTA_DATOS, "elecciones_departamento_2024.csv"), encoding = "UTF-8")
 regiones   <- sort(unique(elecciones$region))
 
 
