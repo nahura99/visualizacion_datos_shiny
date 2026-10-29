@@ -5,6 +5,7 @@
 
 library(shiny)
 library(bslib)
+library(here)
 
 ################################################################################
 
@@ -61,7 +62,7 @@ tema_curso <- bs_theme(
 
 # CODIGO ESTATICO
 
-elecciones <- read.csv("../datos/elecciones_departamento_2024.csv", encoding = "UTF-8")
+elecciones <- read.csv(here("datos", "elecciones_departamento_2024.csv"), encoding = "UTF-8")
 
 # Vector con las regiones (para el menú desplegable).
 regiones <- sort(unique(elecciones$region))

@@ -10,6 +10,7 @@
 ################################################################################
 
 library(shiny)
+library(here)
 
 ## ZONA DE PRUEBAS
 TITULO <- "Mi primera app Shiny" # Cambiá el texto entre comillas, guardá y volvé a apretar Run App.
@@ -20,7 +21,7 @@ TITULO <- "Mi primera app Shiny" # Cambiá el texto entre comillas, guardá y vo
 # read.csv() lee una tabla guardada como texto separado por comas y la guarda
 # en el objeto elecciones (un data frame, 19 filas, una por departamento).
 
-elecciones <- read.csv("../datos/elecciones_departamento_2024.csv", encoding = "UTF-8")
+elecciones <- read.csv(here("datos", "elecciones_departamento_2024.csv"), encoding = "UTF-8")
 # La ruta empieza con ".." porque Run App se para en la carpeta clase1/ y los
 # datos están un nivel más arriba, en datos/.
 

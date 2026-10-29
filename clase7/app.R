@@ -5,10 +5,12 @@
 
 library(shiny)
 library(bslib)
+library(here)
 library(ggplot2)   # gráficos
 library(plotly)    # gráficos interactivos (zoom y datos al pasar el mouse)
 library(DT)        # tablas interactivas (buscar, ordenar, paginar)
 library(leaflet)   # mapas interactivos (nuevo)
+
 
 ################################################################################
 
@@ -91,9 +93,10 @@ tema_curso <- bs_theme(
 # Para PUBLICAR la app, los datos tienen que viajar con ella. Por eso esta
 # clase tiene su propia carpeta datos/ con una copia de los CSV, y la ruta
 # ya no empieza con "../" como en las clases anteriores.
-elecciones <- read.csv("datos/elecciones_departamento_2024.csv", encoding = "UTF-8")
-locales    <- read.csv("datos/elecciones_locales_2024.csv",      encoding = "UTF-8")
-censo      <- read.csv("datos/censo_departamentos.csv",          encoding = "UTF-8")
+
+elecciones <- read.csv(here("datos", "elecciones_departamento_2024.csv"), encoding = "UTF-8")
+locales    <- read.csv(here("datos", "elecciones_locales_2024.csv"), encoding = "UTF-8")
+censo      <- read.csv(here("datos", "censo_departamentos.csv"), encoding = "UTF-8")
 
 # Nos quedamos con los locales que tienen coordenadas y un lema ganador.
 locales <- locales[!is.na(locales$Latitud) & locales$LemaGanador != "", ]
